@@ -3,7 +3,8 @@ import { Routes, RouterModule, PreloadAllModules } from '@angular/router';
 //import { MyGuard } from './shared/my.guard';
 
 const routes: Routes = [
-  // { path: '', redirectTo: 'git', pathMatch: 'full'},
+  { path: '', redirectTo: 'bestrepos', pathMatch: 'full'},
+  { path: 'bestrepos', loadChildren: () => import('./bestrepos/bestrepos.module').then(m => m.BestReposModule), }
 ];
 
 @NgModule({
