@@ -7,10 +7,13 @@ import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { MatModule } from '../mat.module';
 import { BestReposRoutingModule } from './bestrepos-routing.module';
-
+import { DateAgoPipe } from '../pipes/date-ago.pipe';
+import { ScrollingModule} from '@angular/cdk/scrolling';
+import { ScrollDispatchModule } from '@angular/cdk/scrolling';
 @NgModule({
   declarations: [
-    BestReposComponent
+    BestReposComponent,
+    DateAgoPipe
   ],
   imports: [
     CommonModule,
@@ -19,7 +22,9 @@ import { BestReposRoutingModule } from './bestrepos-routing.module';
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    BestReposRoutingModule
+    BestReposRoutingModule,
+    ScrollDispatchModule,
+    ScrollingModule,
   ]
 })
 export class BestReposModule {
