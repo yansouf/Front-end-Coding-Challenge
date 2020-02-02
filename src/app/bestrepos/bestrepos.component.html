@@ -1,29 +1,4 @@
-<style>
-  .flex-container {
-    display: flex;
-    flex-wrap: nowrap;
-    /* background-color: DodgerBlue; */
-  }
-
-  .avatar {
-    width: 100px;
-    margin: 10px;
-    text-align: center;
-    line-height: 75px;
-    font-size: 30px;
-    /* flex-grow: 1; */
-  }
-  .disc {
-    width: 100px;
-    /* margin: 10px; */
-    /* line-height: 75px; */
-    /* font-size: 30px; */
-    flex-grow:1;
-    padding-left:10px;
-  }
-
-  </style>
-
+<!--
 <div class="flex-container" *ngFor="let repo of repos">
   <div class="avatar">
     <img [src]="test.avatar" alt="" style="height:100px;">
@@ -37,36 +12,22 @@
       <div style=" margin:5px;padding:5px"> Submitted {{repo.submited | dateAgo}} by {{repo.owner}}</div>
     </div>
   </div>
-</div>
+</div> -->
 
-
-<style>
-.example-viewport {
-  height: 100%;
-  width: 100%;
-  border: 1px solid black;
-}
-
-.example-item {
-  height: 120px;
-  width:100%;
-}
-
-</style>
 <cdk-virtual-scroll-viewport itemSize="120" class="example-viewport">
   <div *cdkVirtualFor="let item of ds" class="example-item">
 
     <div class="flex-container" >
       <div class="avatar">
-        <img [src]="test.avatar" alt="" style="height:100px;">
+        <img [src]="item.avatar" alt="" style="height:100px;">
       </div>
       <div class="disc">
-        <h3 style="margin:5px 0">{{test.name}}</h3>
-        <p> {{test.disc}}</p>
+        <h3 style="margin:5px 0">{{item.name}}</h3>
+        <p> {{item.disc}}</p>
         <div class="flex-container">
-          <div style="border:solid black 1px;margin:5px;padding:5px"> Stars: {{test.stars}}</div>
-          <div style="border:solid black 1px;margin:5px;padding:5px"> Issues:  {{test.issues}}</div>
-          <div style=" margin:5px;padding:5px"> Submitted {{test.submited | dateAgo}} by {{test.owner}}</div>
+          <div style="border:solid black 1px;margin:5px;padding:5px"> Stars: {{item.stars | shortNumber}}</div>
+          <div style="border:solid black 1px;margin:5px;padding:5px"> Issues:  {{item.issues | shortNumber }}</div>
+          <div style=" margin:5px;padding:5px"> Submitted {{item.submited | dateAgo}} by {{item.owner}}</div>
         </div>
       </div>
     </div>

@@ -3,6 +3,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { CollectionViewer, DataSource } from '@angular/cdk/collections';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import * as faker from 'faker';
+import { ReposService } from '../services/ReposService';
 @Component({
   selector: 'app-bestrepos',
   templateUrl: './bestrepos.component.html',
@@ -10,55 +11,15 @@ import * as faker from 'faker';
 })
 export class BestReposComponent   {
 
-  ds = new MyDataSource();
+  ds = new MyDataSource(this.reposService);
+  constructor(private reposService : ReposService){
 
-repos : RepoInfo[]=[{
-  name:"frontend-coding-challenge",
-  disc:"This is my repo",
-  stars:5,
-  issues:30,
-  submited:new Date('2020/01/20'),
-  owner:"Yanssouf",
-  avatar:"https://avatars2.githubusercontent.com/u/35151035?s=40&v=4",
-  },{
-  name:"frontend-coding-challenge",
-  disc:"This is my repo",
-  stars:5,
-  issues:30,
-  submited:new Date('2020/01/20'),
-  owner:"Yanssouf",
-  avatar:"https://avatars2.githubusercontent.com/u/35151035?s=40&v=4",
-  },{
-  name:"frontend-coding-challenge",
-  disc:"This is my repo",
-  stars:5,
-  issues:30,
-  submited:new Date(),
-  owner:"Yanssouf",
-  avatar:"https://avatars2.githubusercontent.com/u/35151035?s=40&v=4",
-  },{
-  name:"frontend-coding-challenge",
-  disc:"This is my repo",
-  stars:5,
-  issues:30,
-  submited:new Date('2020/01/20'),
-  owner:"Yanssouf",
-  avatar:"https://avatars2.githubusercontent.com/u/35151035?s=40&v=4",
-  },
-];
-test = {
-  name:"frontend-coding-challenge",
-  disc:"This is my repo",
-  stars:5,
-  issues:30,
-  submited:new Date(),
-  owner:"Yanssouf",
-  avatar:"https://avatars2.githubusercontent.com/u/35151035?s=40&v=4",
-  };
-
+  }
 
 
 }
+
+//Declare a class for repos
 export class RepoInfo{
 name="frontend-coding-challenge";
 disc="This is my repo";
@@ -69,22 +30,42 @@ owner="Yanssouf";
 avatar="https://avatars2.githubusercontent.com/u/35151035?s=40&v=4";
 }
 
-
-export class MyDataSource extends DataSource<string | undefined> {
+//We need to define what our data source
+export class MyDataSource extends DataSource<RepoInfo | undefined> {
   private _length = 0;
-  private _pageSize = 10;
-  private _cachedData = Array.from<string>({length: this._length});
+  private _pageSize = 30;
+  private _cachedData = Array.from<RepoInfo>({length: this._length});
   private _fetchedPages = new Set<number>();
-  private _dataStream = new BehaviorSubject<(string | undefined)[]>(this._cachedData);
+  private _dataStream = new BehaviorSubject<(RepoInfo | undefined)[]>(this._cachedData);
   private _subscription = new Subscription();
-   constructor(){
+
+
+   constructor(private reposService : ReposService){
      super();
-        for (let index = 0; index < 10; index++) {
-    this._cachedData.push('k'+index.toString())
+
+     //Fetch the first page of repos (30 per page)
+     this.reposService.get(1).subscribe(
+      u =>{
+        for (const repo of u.items) {
+          let r : RepoInfo = {
+            name:repo.name,
+            disc:repo.description,
+            stars:repo.stargazers_count,
+            issues:repo.open_issues,
+            submited:new Date(repo.created_at),
+            owner:repo.owner.login,
+            avatar:repo.owner.avatar_url,
+            } ;
+              console.log(r);
+
+          this._cachedData.push(r)
+        }
+        this._dataStream.next(this._cachedData);
+      }
+    );
 
   }
-  }
-  connect(collectionViewer: CollectionViewer): Observable<(string | undefined)[]> {
+  connect(collectionViewer: CollectionViewer): Observable<(RepoInfo | undefined)[]> {
     this._subscription.add(collectionViewer.viewChange.subscribe(range => {
       const startPage = this._getPageForIndex(range.start);
       const endPage = this._getPageForIndex(range.end - 1);
@@ -104,6 +85,7 @@ export class MyDataSource extends DataSource<string | undefined> {
     return Math.floor(index / this._pageSize);
   }
 
+
   private _fetchPage(page: number) {
     console.log(this._cachedData.length);
 
@@ -112,14 +94,29 @@ export class MyDataSource extends DataSource<string | undefined> {
     }
     this._fetchedPages.add(page);
 
-    // Use `setTimeout` to simulate fetching data from server.
-setTimeout(() => {
-  for (let index = 0; index < 10; index++) {
-    this._cachedData.push(index.toString())
 
-  }
+    this.reposService.get(page).subscribe(
 
-  this._dataStream.next(this._cachedData);
-}, Math.random() * 1000 + 200);
+      u =>{
+        for (const repo of u.items) {
+          let r : RepoInfo = {
+            name:repo.name,
+            disc:repo.description,
+            stars:repo.stargazers_count,
+            issues:repo.open_issues,
+            submited:new Date(repo.created_at),
+            owner:repo.owner.login,
+            avatar:repo.owner.avatar_url,
+            } ;
+            console.log(r);
+          this._cachedData.push(r)
+        }
+
+        this._dataStream.next(this._cachedData);
+      }
+    );
+
+
+
   }
 }

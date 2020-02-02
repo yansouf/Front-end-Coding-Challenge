@@ -10,10 +10,12 @@ import { BestReposRoutingModule } from './bestrepos-routing.module';
 import { DateAgoPipe } from '../pipes/date-ago.pipe';
 import { ScrollingModule} from '@angular/cdk/scrolling';
 import { ScrollDispatchModule } from '@angular/cdk/scrolling';
+import { ShortNumberPipe } from '../pipes/short-number.pipe';
 @NgModule({
   declarations: [
     BestReposComponent,
-    DateAgoPipe
+    DateAgoPipe,
+    ShortNumberPipe
   ],
   imports: [
     CommonModule,
